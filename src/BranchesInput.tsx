@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
-import { SearchLocation } from './SearchLocation';
 import InputResults from './InputResults';
+import { useClosestBranch } from './hooks/useClosestBranch';
 
-export default function BranchesInput({
-  search,
-  setSearch,
-}: {
-  search: SearchLocation;
-  setSearch: React.Dispatch<React.SetStateAction<SearchLocation>>;
-}) {
+export default function BranchesInput() {
+  const { search, setSearch } = useClosestBranch();
+
   const [input, setInput] = useState('');
+
   useEffect(() => {
-    if (input.trim().length > 2) {
+    if (input.trim().length > 2 && setSearch) {
       setSearch('fetching');
       Location.geocodeAsync(input.trim())
         .then((result) => {
@@ -23,7 +20,7 @@ export default function BranchesInput({
           setSearch('error');
         });
     } else {
-      setSearch(undefined);
+      setSearch && setSearch(undefined);
     }
   }, [input]);
   return (
