@@ -1,8 +1,52 @@
-import MapView, { Marker, Callout } from 'react-native-maps';
+import { LegacyRef, useRef, useEffect } from 'react';
+import MapView, { Marker, Callout, Camera } from 'react-native-maps';
 import { StyleSheet, View, Text } from 'react-native';
 import { Branch, branchAddress } from './Branch';
 
-export default function Map({ closest }: { closest: Branch | undefined }) {
+export default function Map({ closest }: { closest: Branch[] | undefined }) {
+  const map: LegacyRef<MapView> = useRef(null);
+
+  const zoomInMap = () => {
+    map?.current?.getCamera().then((cam: Camera) => {
+      cam.zoom += 1;
+      map?.current?.animateCamera(cam);
+    });
+  };
+
+  useEffect(() => {
+    zoomInMap();
+  }, []);
+
+  const mapMarkers =
+    closest &&
+    closest.map((close) => {
+      return (
+        close.PostalAddress.GeoLocation && (
+          <Marker
+            ref={map}
+            key={close.Identification}
+            title={close.Name}
+            description={branchAddress(close)}
+            coordinate={{
+              latitude: parseFloat(
+                close.PostalAddress.GeoLocation.GeographicCoordinates.Latitude,
+              ),
+              longitude: parseFloat(
+                close.PostalAddress.GeoLocation.GeographicCoordinates.Longitude,
+              ),
+            }}>
+            <Callout tooltip>
+              <View style={styles.callout}>
+                <Text style={styles.calloutHeader}>
+                  {close.Name || close.Identification}
+                </Text>
+                <Text style={styles.calloutText}>{branchAddress(close)}</Text>
+              </View>
+            </Callout>
+          </Marker>
+        )
+      );
+    });
   return (
     <View style={styles.container}>
       <MapView
@@ -13,31 +57,7 @@ export default function Map({ closest }: { closest: Branch | undefined }) {
           longitude: -2.82,
           longitudeDelta: 11.35,
         }}>
-        {closest && closest.PostalAddress.GeoLocation && (
-          <Marker
-            key={closest.Identification}
-            title={closest.Name}
-            description={branchAddress(closest)}
-            coordinate={{
-              latitude: parseFloat(
-                closest.PostalAddress.GeoLocation.GeographicCoordinates
-                  .Latitude,
-              ),
-              longitude: parseFloat(
-                closest.PostalAddress.GeoLocation.GeographicCoordinates
-                  .Longitude,
-              ),
-            }}>
-            <Callout tooltip>
-              <View style={styles.callout}>
-                <Text style={styles.calloutHeader}>
-                  {closest.Name || closest.Identification}
-                </Text>
-                <Text style={styles.calloutText}>{branchAddress(closest)}</Text>
-              </View>
-            </Callout>
-          </Marker>
-        )}
+        {mapMarkers}
       </MapView>
     </View>
   );

@@ -39,10 +39,10 @@ function distanceBetween(coord1: Coordinate, coord2: Coordinate) {
 export function closestBranchTo(
   location: Location.LocationGeocodedLocation,
   branches: Branch[],
-): Branch | undefined {
+): Branch[] | undefined {
   let closestBranch = undefined;
   let closestDistance = Number.MAX_VALUE;
-  branches.forEach((branch) => {
+  const closestBranches: Branch[] = branches.map((branch) => {
     if (branch.PostalAddress.GeoLocation) {
       const distance = distanceBetween(location, {
         latitude: parseFloat(
@@ -52,11 +52,24 @@ export function closestBranchTo(
           branch.PostalAddress.GeoLocation.GeographicCoordinates.Longitude,
         ),
       });
-      if (distance < closestDistance) {
-        closestBranch = branch;
-        closestDistance = distance;
+      return {
+        ...branch,
+        distance
       }
+      // if (distance < closestDistance) {
+      //   closestBranch = branch;
+      //   closestDistance = distance;
+      // }
+    }
+    return {
+      ...branch
     }
   });
-  return closestBranch;
+
+  let closeBranches = closestBranches.filter(branch => branch.PostalAddress.GeoLocation)
+  closeBranches = closeBranches.sort((a: Branch, b: Branch) => {
+    return (a.distance as number) - (b.distance as number);
+  }).slice(0, 5);
+
+  return closeBranches;
 }

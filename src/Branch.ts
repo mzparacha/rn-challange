@@ -59,13 +59,13 @@ type OtherItem = {
 
 type AvailableDay = {
   Name:
-    | 'Friday'
-    | 'Monday'
-    | 'Saturday'
-    | 'Sunday'
-    | 'Thursday'
-    | 'Tuesday'
-    | 'Wednesday';
+  | 'Friday'
+  | 'Monday'
+  | 'Saturday'
+  | 'Sunday'
+  | 'Thursday'
+  | 'Tuesday'
+  | 'Wednesday';
   OpeningHours: {
     OpeningTime: string;
     ClosingTime: string;
@@ -75,13 +75,13 @@ type AvailableDay = {
 
 type ContactMethod = {
   ContactType:
-    | 'AlternateEmail'
-    | 'AlternateFax'
-    | 'AlternatePhone'
-    | 'Email'
-    | 'Fax'
-    | 'Other'
-    | 'Phone';
+  | 'AlternateEmail'
+  | 'AlternateFax'
+  | 'AlternatePhone'
+  | 'Email'
+  | 'Fax'
+  | 'Other'
+  | 'Phone';
   ContactContent: string;
   ContactDescription?: string;
   OtherContactType?: OtherItem;
@@ -128,6 +128,7 @@ export type Branch = {
       };
     };
   };
+  distance?: number
 };
 
 export const branchAddress = (b: Branch) =>

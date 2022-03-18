@@ -13,7 +13,7 @@ import BranchDetails from './src/BranchDetails';
 export default function App() {
   const [state, branches] = useLoading();
   const [search, setSearch] = useState<SearchLocation>();
-  const [closest, setClosest] = useState<undefined | Branch>();
+  const [closest, setClosest] = useState<undefined | Branch[]>();
   useEffect(() => {
     if (branches && typeof search === 'object') {
       setClosest(closestBranchTo(search, branches));
@@ -28,7 +28,7 @@ export default function App() {
       {state === 'ready' ? (
         <>
           <BranchesInput search={search} setSearch={setSearch} />
-          {closest && <BranchDetails branch={closest} />}
+          {closest && <BranchDetails branches={closest} />}
         </>
       ) : state === 'error' ? (
         <View style={styles.centred}>

@@ -1,9 +1,10 @@
+import { ReactElement } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Branch } from './Branch';
 
-export default function BranchDetails({ branch }: { branch: Branch }) {
-  return (
-    <View style={styles.container}>
+export default function BranchDetails({ branches }: { branches: Branch[] }) {
+  const nearBranches = branches.map((branch) => (
+    <View key={branch.Identification} style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.text}>Branch name:</Text>
         <Text style={styles.textBold}>{branch.Name}</Text>
@@ -23,7 +24,9 @@ export default function BranchDetails({ branch }: { branch: Branch }) {
         </View>
       )}
     </View>
-  );
+  ));
+
+  return <>{nearBranches}</>;
 }
 
 const styles = StyleSheet.create({
